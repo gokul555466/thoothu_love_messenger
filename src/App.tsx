@@ -3,8 +3,9 @@ import Header from './components/Header';
 import LoginPage from './components/LoginPage';
 import ConfessionForm from './components/ConfessionForm';
 import SuccessPage from './components/SuccessPage';
+import AdminPanel from './components/AdminPanel';
 
-type AppState = 'login' | 'form' | 'success';
+type AppState = 'login' | 'form' | 'success' | 'admin';
 
 interface FormData {
   userName: string;
@@ -35,15 +36,25 @@ function App() {
     setSubmittedData(null);
   };
 
+  const handleAdminAccess = () => {
+    setCurrentState('admin');
+  };
+
+  const handleBackFromAdmin = () => {
+    setCurrentState('form');
+  };
+
   return (
     <div className="min-h-screen">
-      {currentState !== 'login' && <Header />}
+      {currentState !== 'login' && currentState !== 'admin' && <Header />}
       
       {currentState === 'login' && <LoginPage onLogin={handleLogin} />}
       
-      {currentState === 'form' && <ConfessionForm onSubmit={handleFormSubmit} />}
+      {currentState === 'form' && <ConfessionForm onSubmit={handleFormSubmit} onAdminAccess={handleAdminAccess} />}
       
       {currentState === 'success' && <SuccessPage onNewMessage={handleNewMessage} />}
+      
+      {currentState === 'admin' && <AdminPanel onBack={handleBackFromAdmin} />}
     </div>
   );
 }

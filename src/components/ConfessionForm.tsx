@@ -14,9 +14,10 @@ interface FormData {
 
 interface ConfessionFormProps {
   onSubmit: (data: FormData) => void;
+  onAdminAccess: () => void;
 }
 
-const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit }) => {
+const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit, onAdminAccess }) => {
   const [formData, setFormData] = useState<FormData>({
     userName: '',
     userPhone: '',
@@ -35,34 +36,24 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit }) => {
     setIsSubmitting(true);
     
     try {
-      // For demo purposes, simulate successful submission
-      // In production, this would connect to your actual Supabase function
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Save to localStorage for admin panel
+      const submissionData = {
+        id: Date.now().toString(),
+        ...formData,
+        timestamp: new Date().toISOString()
+      };
       
-      // Simulate API call (replace with actual endpoint when ready)
-      const response = await fetch('https://httpbin.org/post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          timestamp: new Date().toISOString(),
-          destination_email: 'gokulsrg3@gmail.com'
-        }),
-      });
+      const existingSubmissions = JSON.parse(localStorage.getItem('loveSubmissions') || '[]');
+      existingSubmissions.push(submissionData);
+      localStorage.setItem('loveSubmissions', JSON.stringify(existingSubmissions));
+      
+      // Simulate processing time
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-      if (response.ok) {
-        // Log the form data for demo purposes
-        console.log('Love message data:', {
-          ...formData,
-          timestamp: new Date().toISOString(),
-          destination_email: 'gokulsrg3@gmail.com'
-        });
-        onSubmit(formData);
-      } else {
-        throw new Error('Failed to send message');
-      }
+      // Log the form data for demo purposes
+      console.log('Love message saved:', submissionData);
+      onSubmit(formData);
+      
     } catch (error) {
       console.error('Error sending love message:', error);
       alert('Failed to send your love message. Please try again.');
@@ -102,6 +93,15 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit }) => {
           <Heart className="h-12 w-12 text-pink-500 fill-current mx-auto mb-4 animate-pulse" />
           <h2 className="text-3xl font-bold text-gray-800 mb-2">Share Your Heart</h2>
           <p className="text-gray-600">உங்கள் காதலை பகிருங்கள் • Let love find its way</p>
+          
+          {/* Admin Access Button */}
+          <button
+            type="button"
+            onClick={onAdminAccess}
+            className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline"
+          >
+            Admin Panel
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
