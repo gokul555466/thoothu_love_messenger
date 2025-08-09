@@ -14,6 +14,15 @@ A beautiful, romantic web application where people can anonymously confess their
 
 ## Setup Instructions
 
+### Current Status
+
+The application is currently set up for demo purposes. To enable actual email sending:
+
+1. Set up a Supabase project
+2. Deploy the edge function
+3. Configure the Resend API key
+4. Update the environment variables
+
 ### 1. Email Service Setup (Resend)
 
 1. Go to [Resend](https://resend.com) and create an account
