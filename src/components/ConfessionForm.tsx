@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Heart, Send, Phone, MessageCircle, Mail, Instagram, Check } from 'lucide-react';
+import { sendEmailViaFormspree } from '../utils/emailService';
 
 interface FormData {
   userName: string;
@@ -36,6 +37,20 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit, onAdminAccess
     setIsSubmitting(true);
     
     try {
+      // Send email to admin
+      await sendEmailViaFormspree({
+        senderName: formData.userName,
+        senderPhone: formData.userPhone,
+        senderGender: formData.userGender,
+        loverName: formData.loverName,
+        loverGender: formData.loverGender,
+        message: formData.message,
+        contactMethod: formData.contactMethod,
+        contactDetails: formData.contactDetails
+      });
+
+      console.log('Email sent successfully to gokulsrg3@gmail.com');
+
       // Save to localStorage for admin panel
       const submissionData = {
         id: Date.now().toString(),
@@ -47,16 +62,23 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit, onAdminAccess
       existingSubmissions.push(submissionData);
       localStorage.setItem('loveSubmissions', JSON.stringify(existingSubmissions));
       
-      // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Log the form data for demo purposes
-      console.log('Love message saved:', submissionData);
       onSubmit(formData);
       
     } catch (error) {
       console.error('Error sending love message:', error);
-      alert('Failed to send your love message. Please try again.');
+      
+      // Save locally even if email fails, but show error
+      const submissionData = {
+        id: Date.now().toString(),
+        ...formData,
+        timestamp: new Date().toISOString()
+      };
+      
+      const existingSubmissions = JSON.parse(localStorage.getItem('loveSubmissions') || '[]');
+      existingSubmissions.push(submissionData);
+      localStorage.setItem('loveSubmissions', JSON.stringify(existingSubmissions));
+      
+      alert('Your message was saved locally, but we couldn\'t send the email notification. Please contact the admin directly.');
     } finally {
       setIsSubmitting(false);
     }

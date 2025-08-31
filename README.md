@@ -62,10 +62,27 @@ npm run dev
 
 1. **Login**: Users authenticate with Google
 2. **Form**: Fill out comprehensive love confession form
-3. **Submit**: Form data is sent to Supabase Edge Function
-4. **Email**: Beautiful HTML email is sent to gokulsrg3@gmail.com
+3. **Submit**: Form data is sent via Formspree to gokulsrg3@gmail.com
+4. **Email**: Email notification is sent to admin
 5. **Success**: User sees confirmation page
+6. **Admin Panel**: View all submissions via admin panel
 
+## Viewing Submitted Data
+
+### Method 1: Admin Panel (Recommended)
+1. Go to the form page
+2. Click "Admin Panel" link below the main heading
+3. View all submissions with detailed information
+4. Export data to CSV if needed
+
+### Method 2: Browser Console
+1. Open Developer Tools (F12)
+2. Go to Console tab
+3. Submit a form to see the logged data
+
+### Method 3: Email Notifications
+- All form submissions are automatically sent to gokulsrg3@gmail.com
+- Check your email inbox for new love message notifications
 ## Email Template
 
 The application sends beautifully formatted HTML emails containing:
