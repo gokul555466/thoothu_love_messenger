@@ -15,43 +15,71 @@ interface FormData {
 
 interface ConfessionFormProps {
   onSubmit: (data: FormData) => void;
-  onAdminAccess: () => void;
 }
 
-const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit, onAdminAccess }) => {
+const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState<FormData>({
-    userName: '',
-    userPhone: '',
-    userGender: '',
-    loverName: '',
-    loverGender: '',
-    message: '',
-    contactMethod: '',
-    contactDetails: ''
-  });
+          service_id: 'service_thoothu',
+          template_id: 'template_love_msg',
+          user_id: 'YOUR_PUBLIC_KEY',
+          template_params: {
+            to_email: 'gokulsrg3@gmail.com',
+            from_name: 'Thoothu Love Messenger',
+            subject: `💕 New Love Message: ${formData.userName} → ${formData.loverName}`,
+            sender_name: formData.userName,
+            sender_phone: formData.userPhone,
+            sender_gender: formData.userGender,
+            lover_name: formData.loverName,
+            lover_gender: formData.loverGender,
+            love_message: formData.message,
+            contact_method: formData.contactMethod,
+            contact_details: formData.contactDetails,
+            timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+        // Fallback to Formspree if EmailJS fails
+        const formspreeResponse = await fetch('https://formspree.io/f/xpwagkqr', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: 'gokulsrg3@gmail.com',
+            subject: `💕 New Love Message: ${formData.userName} → ${formData.loverName}`,
+            message: `
+NEW LOVE MESSAGE FROM THOOTHU 💕
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+SENDER DETAILS:
+Name: ${formData.userName}
+Phone: ${formData.userPhone}
+Gender: ${formData.userGender}
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      // Send email to admin
-      await sendEmailViaFormspree({
-        senderName: formData.userName,
-        senderPhone: formData.userPhone,
-        senderGender: formData.userGender,
-        loverName: formData.loverName,
-        loverGender: formData.loverGender,
-        message: formData.message,
-        contactMethod: formData.contactMethod,
+RECIPIENT DETAILS:
+Name: ${formData.loverName}
+Gender: ${formData.loverGender}
+
+LOVE MESSAGE:
+"${formData.message}"
+
+CONTACT INFORMATION:
+Method: ${formData.contactMethod}
+Details: ${formData.contactDetails}
+
+Timestamp: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+
+---
+Sent from Thoothu - Love Messenger of Tamil Nadu
+            `
+          })
+        });
+
+        if (!formspreeResponse.ok) {
+          throw new Error('Failed to send email');
+        }
         contactDetails: formData.contactDetails
       });
 
       console.log('Email sent successfully to gokulsrg3@gmail.com');
 
-      // Save to localStorage for admin panel
+      // Save to localStorage for backup
       const submissionData = {
         id: Date.now().toString(),
         ...formData,
@@ -66,19 +94,7 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit, onAdminAccess
       
     } catch (error) {
       console.error('Error sending love message:', error);
-      
-      // Save locally even if email fails, but show error
-      const submissionData = {
-        id: Date.now().toString(),
-        ...formData,
-        timestamp: new Date().toISOString()
-      };
-      
-      const existingSubmissions = JSON.parse(localStorage.getItem('loveSubmissions') || '[]');
-      existingSubmissions.push(submissionData);
-      localStorage.setItem('loveSubmissions', JSON.stringify(existingSubmissions));
-      
-      alert('Your message was saved locally, but we couldn\'t send the email notification. Please contact the admin directly.');
+      alert('Failed to send your love message. Please try again or contact support.');
     } finally {
       setIsSubmitting(false);
     }
@@ -115,15 +131,6 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit, onAdminAccess
           <Heart className="h-12 w-12 text-pink-500 fill-current mx-auto mb-4 animate-pulse" />
           <h2 className="text-3xl font-bold text-gray-800 mb-2">Share Your Heart</h2>
           <p className="text-gray-600">உங்கள் காதலை பகிருங்கள் • Let love find its way</p>
-          
-          {/* Admin Access Button */}
-          <button
-            type="button"
-            onClick={onAdminAccess}
-            className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline"
-          >
-            Admin Panel
-          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
