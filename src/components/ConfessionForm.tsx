@@ -19,6 +19,24 @@ interface ConfessionFormProps {
 
 const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState<FormData>({
+    userName: '',
+    userPhone: '',
+    userGender: '',
+    loverName: '',
+    loverGender: '',
+    message: '',
+    contactMethod: '',
+    contactDetails: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const emailData = {
           service_id: 'service_thoothu',
           template_id: 'template_love_msg',
           user_id: 'YOUR_PUBLIC_KEY',
@@ -35,6 +53,9 @@ const ConfessionForm: React.FC<ConfessionFormProps> = ({ onSubmit }) => {
             contact_method: formData.contactMethod,
             contact_details: formData.contactDetails,
             timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+          }
+      };
+
         // Fallback to Formspree if EmailJS fails
         const formspreeResponse = await fetch('https://formspree.io/f/xpwagkqr', {
           method: 'POST',
@@ -67,15 +88,14 @@ Timestamp: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
 
 ---
 Sent from Thoothu - Love Messenger of Tamil Nadu
-            `
+            `,
+            contactDetails: formData.contactDetails
           })
         });
 
         if (!formspreeResponse.ok) {
           throw new Error('Failed to send email');
         }
-        contactDetails: formData.contactDetails
-      });
 
       console.log('Email sent successfully to gokulsrg3@gmail.com');
 
