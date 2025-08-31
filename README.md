@@ -67,23 +67,20 @@ npm run dev
 5. **Success**: User sees confirmation page
 6. **Admin Panel**: View all submissions via admin panel
 
-## Viewing Submitted Data
+## How to View User Details
 
-### Method 1: Admin Panel (Recommended)
-1. Go to the form page
-2. Click "Admin Panel" link below the main heading
-3. View all submissions with detailed information
-4. Export data to CSV if needed
-
-### Method 2: Browser Console
-1. Open Developer Tools (F12)
-2. Go to Console tab
-3. Submit a form to see the logged data
-
-### Method 3: Email Notifications
-- All form submissions are automatically sent to gokulsrg3@gmail.com
+### Method 1: Email Notifications (Primary)
+- Every form submission sends an email to `gokulsrg3@gmail.com`
 - Check your email inbox for new love message notifications
-## Email Template
+- Each email contains all the form details formatted nicely
+
+### Method 2: Browser Console (For Testing)
+- Open Developer Tools (F12)
+- Go to Console tab
+- Submit a form to see the logged data
+- Data is also saved to localStorage as backup
+
+## Email Content
 
 The application sends beautifully formatted HTML emails containing:
 - Sender details (name, phone, gender)
@@ -91,6 +88,12 @@ The application sends beautifully formatted HTML emails containing:
 - Love message
 - Contact method and details
 - Timestamp and source information
+
+## Backup Data Storage
+
+- All submissions are saved to browser localStorage as backup
+- You can access this data via browser console: `JSON.parse(localStorage.getItem('loveSubmissions'))`
+- Data persists between browser sessions
 
 ## Tech Stack
 
